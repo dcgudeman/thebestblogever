@@ -1,0 +1,41 @@
+<% include partials/header.ejs %>
+<!--   <div class="container"> -->
+<h1>Welcome <%= fullname %></h1>
+<div class="newPostDiv">
+  <!-- <a class="showForm" href="#">New Post</a> -->
+  <input class="btn btn-default showForm" type="button" value="Create a New Post">
+  <form class="newPost" role="form" action="/newPost" method="post">
+    <div class="form-group">
+      <label for="title">Title</label>
+      <input name="title" type="text" class="form-control" id="title" placeholder="Title">
+      <label for="summary">Summary</label>
+      <textarea name="summary" id="summary" class="form-control" rows="2" placeholder="Summary"></textarea>
+      <label for="content">Content</label>
+      <textarea name="content" id="content" class="form-control" rows="5" placeholder="Content"></textarea>
+    </div>
+    <input class="btn btn-default" type="submit" value="Submit">
+    <input class="btn btn-default cancelBtn" type="button" value="Cancel">
+  </form>
+</div>
+
+<% posts.forEach(function(element){ %>
+
+  <a href="/post/<%= element.dataValues.id  %>"><h2><%= element.dataValues.title  %></h2></a>
+  <p><%= element.dataValues.summary  %></p>
+  <a href="/user/<%= element.dataValues.User.id  %>"><h3><%= element.dataValues.User.firstname %> <%= element.dataValues.User.lastname %></h3></a>
+  <br>
+  <hr>
+  <br>
+
+<% }) %>
+
+
+
+
+
+
+
+
+
+<!-- </div> -->
+<% include partials/footer.ejs %>

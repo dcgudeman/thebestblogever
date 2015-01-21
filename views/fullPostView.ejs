@@ -1,0 +1,114 @@
+<% include partials/header.ejs %>
+<!--   <div class="container"> -->
+
+
+<h1><%= post.dataValues.title %></h1>
+<p><%= post.dataValues.content %></p>
+<a href="/user/<%= post.dataValues.User.id  %>"><h5><%= post.dataValues.User.firstname %> <%= post.dataValues.User.lastname %></h5></a>
+<% if(post.dataValues.User.id === viewingUser.id && post.dataValues.content!=="Deleted"){ %>
+<div>
+	 <span class="newPostDiv">
+	  <input class="btn btn-default btn-xs showForm" type="button" value="Edit">
+	  <form class="newPost" role="form" action="/editPost" method="post">
+	    <div class="form-group">
+	      <textarea name="content" id="content" class="form-control" rows="5" placeholder="Content"><%= post.dataValues.content  %></textarea>
+	    </div>
+	    <input type="hidden" name="post_id" value="<%=post.dataValues.id%>">
+	    <input class="btn btn-default btn-xs" type="submit" value="Submit">
+	    <input class="btn btn-default btn-xs cancelBtn" type="button" value="Cancel">
+	  </form>
+	 </span>
+	 <span class="newPostDiv">
+	  <input class="btn btn-danger btn-xs showForm" type="button" value="Delete">
+	  <form class="newPost" role="form" action="/deletePost" method="post">
+	    <input type="hidden" name="post_id" value="<%=post.dataValues.id%>">
+	    <label for="check">Are you sure?</label>
+	    <input id="check" class="btn btn-default btn-xs" type="submit" value="Yes">
+	    <input class="btn btn-default btn-xs cancelBtn" type="button" value="Cancel">
+	  </form>
+	</span>
+</div>
+	<% } %>
+<hr>
+
+<form class="newComment" role="form" action="/newComment" method="post">
+  <div class="form-group">
+    <label for="content"></label>
+    <textarea name="content" id="content" class="form-control" rows="2" placeholder="Comment"></textarea>
+    <!-- <input type="hidden" name="parent_comment_id" value="null"> -->
+    <input type="hidden" name="post_id" value="<%=post.dataValues.id%>">
+  </div>
+  <input class="btn btn-default" type="submit" value="Submit">
+</form>
+
+<br>
+
+
+<!-- declaring the function here NOT CALLING IT! -->
+<% var displayComments = function(vertex){ %>
+<div class="comment" style="margin-left:<%=40*vertex.level%>px;" >
+
+	<p class="commentContent" style="<%if(vertex.me.content==="Deleted"){%>color:#888;font-style: italic;<% } %>"><%= vertex.me.content  %></p>
+
+
+
+	<%if(vertex.me.content!=="Deleted"){ %><p><small><%= vertex.me.User.username  %></small></p>
+
+
+	<span class="newPostDiv">
+	  <input class="btn btn-default btn-xs showForm" type="button" value="Comment">
+	  <form class="newPost" role="form" action="/newComment" method="post">
+	    <div class="form-group">
+	      <textarea name="content" id="content" class="form-control" rows="1" placeholder="Content"></textarea>
+	    </div>
+	    <input type="hidden" name="parent_comment_id" value="<%= vertex.me.id%>">
+	    <input type="hidden" name="post_id" value="<%=post.dataValues.id%>">
+	    <input class="btn btn-default btn-xs " type="submit" value="Submit">
+	    <input class="btn btn-default btn-xs cancelBtnComments" type="button" value="Cancel">
+	  </form>
+	 </span>
+
+
+
+	 <% if(vertex.me.User.id === viewingUser.id && vertex.me.content!=="Deleted"){ %>
+	 <span class="newPostDiv ">
+	  <input class="btn btn-default btn-xs showForm" type="button" value="Edit">
+	  <form class="newPost" role="form" action="" method="POST">
+	    <div class="form-group">
+	      <textarea name="content" id="content" class="form-control" rows="1" placeholder="Content"><%= vertex.me.content  %></textarea>
+	    </div>
+	    <input type="hidden" name="post_id" value="<%=post.dataValues.id%>">
+	    <input class="comment_id_class" type="hidden" name="comment_id" value="<%=vertex.me.id%>">
+	    <input class="btn btn-default btn-xs editCommentBtn" type="submit" value="Submit">
+	    <input class="btn btn-default btn-xs cancelBtnComments" type="button" value="Cancel">
+	  </form>
+	 </span>
+
+	 <span class="newPostDiv">
+	  <input class="btn btn-danger btn-xs showForm" type="button" value="Delete">
+	  <form class="newPost" role="form" action="" method="POST">
+	    <input class="comment_id_class" type="hidden" name="comment_id" value="<%= vertex.me.id%>">
+	    <input  type="hidden" name="post_id" value="<%=post.dataValues.id%>">
+	    <label for="check">Are you sure?</label>
+	    <input id="check" class="btn btn-default btn-xs deleteCommentBtn" type="submit" value="Yes">
+	    <input class="btn btn-default btn-xs cancelBtnComments" type="button" value="Cancel">
+	  </form>
+	</span>
+	<% } %>
+
+
+
+	<% } %>
+	<hr>
+</div>
+<!-- question about using hiding elements instead of checking on the back end ?_method=delete-->
+<!-- recursion call in the declaration -->
+<% vertex.children.forEach(displayComments); %>
+
+<!-- end of function declaration -->
+<% }; %>
+
+
+<!-- CALLING FUNCTION HERE -->
+ <%topLevel.forEach(displayComments); %>
+<% include partials/footer.ejs %>

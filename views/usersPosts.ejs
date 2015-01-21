@@ -1,0 +1,18 @@
+<% include partials/header.ejs %>
+<!--   <div class="container"> -->
+
+
+<h1>All posts by <%= posts[0].dataValues.User.dataValues.firstname %> <%= posts[0].dataValues.User.dataValues.lastname %></h1>
+
+<% posts.forEach(function(element){ %>
+
+  <a href="/post/<%= element.dataValues.id  %>"><h2><%= element.dataValues.title  %></h2></a>
+  <p><%= element.dataValues.summary  %></p>
+  <hr>
+  <br>
+
+<% }); %>
+
+
+<!-- </div> -->
+<% include partials/footer.ejs %>
